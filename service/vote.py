@@ -24,7 +24,9 @@ class vote(service):
 		super(vote, self).__init__()
 		self.session = session
 
-	def get(session):
+	def get(self):
+
+		session = self.session
 
 		#清除默认缓存
 		session.commit()
@@ -32,8 +34,10 @@ class vote(service):
 
 		return result.to_dict()
 
-	def getAll(session):
+	def getAll(self):
 		
+		session = self.session
+
 		limit = 10
 		start = 0
 		where = None
@@ -60,7 +64,9 @@ class vote(service):
 				list.append(i.to_dict())
 		list.reverse()
 
-		ret = {}
+		ret = {
+			"status" : 1
+		}
 		ret['list'] = list
 		total = session.query(Entry).count()
 		ret['total']= total
@@ -88,8 +94,10 @@ class vote(service):
 
 		return "NoData"
 
-	def update(session):
+	def update(self):
 		
+		session = self.session
+
 		id = 3
 		lasttime = time.strftime("%Y-%m-%d %H:%M:%S")
 		result = session.query(Entry).filter(Entry.id==id) \
@@ -98,7 +106,9 @@ class vote(service):
 
 		return (result == 1) and "success" or "failure"
 
-	def create(session):
+	def create(self):
+
+		session = self.session
 		
 		addtime = time.strftime("%Y-%m-%d %H:%M:%S")
 		entry = Entry( name="徐丽梅", pic_url="http://toupiao.baiclouds.com/Content/upload/2019/8/16/c9756c31d5ff416ca6a31666a3edf18f.jpg", bno="579", addtime=addtime)
@@ -108,24 +118,12 @@ class vote(service):
 		result = 1
 		return (result == 1) and 'success' or "failure"
 
-	def delet(session):
+	def delet(self):
 		
+		session = self.session
+
 		id = 7
 		result= session.query(Entry).filter(Entry.id == id).delete(synchronize_session="evaluate")
 		session.commit()
 
 		return (result == 1) and 'success' or "failure"
-
-
-"""
-CREATE TABLE `entry` (
-`id` INT(11) NOT NULL auto_increment,
-`name` VARCHAR(20) NOT NULL,
-`pic_url` VARCHAR(255) NOT NULL,
-`bno` VARCHAR(30),
-`score` INT(11) DEFAULT 0,
-`summary` TEXT,
-`addtime` DATE,
-PRIMARY KEY(id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
-"""

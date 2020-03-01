@@ -14,43 +14,43 @@ class Home(control):
 		super(Home, self).__init__()
 		self.vote = vote(session)
 
-	def index():
+	def index(self):
 
-		return "首页"
+		return "flask api"
 
-	def wtf():
+	def wtf(self):
 		
 		form = ContactForm()
 		if form.validate() == False:
 			flash("All fields are required")
 			return render_template("form.html", form = form)
 		else:
-			return reader_template("success.html")
+			return render_template("success.html")
 		return render_template("form.html", form = form)
 
-	def vote(session):
+	def homes(self):
 		
-		return vote.getAll(session)
+		lists = self.vote.getAll()
+		return lists
 
-	def upgrade(session):
+	def upgrade(self):
 		
-		return vote.update(session)
+		return self.vote.update()
 
-	def add(session):
+	def add(self):
 
-		return vote.create(session)
+		return self.vote.create()
 
-	def delet(session):
+	def delet(self):
 
-		return vote.delet(session) 
+		return self.vote.delet() 
 
 	def test(self):
 		
 		result = self.vote.test()
-
 		return result
 
-	def mail():
+	def mail(self):
 		
 		result = "success"
 		return result

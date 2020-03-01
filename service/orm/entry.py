@@ -33,3 +33,16 @@ class Entry(Base):
 	def to_dict(self):
 
 		return {k:v for k,v in self.__dict__.items() if k != "_sa_instance_state"}
+
+"""
+CREATE TABLE `entry` (
+`id` INT(11) NOT NULL auto_increment,
+`name` VARCHAR(20) NOT NULL,
+`pic_url` VARCHAR(255) NOT NULL,
+`bno` VARCHAR(30),
+`score` INT(11) DEFAULT 0,
+`summary` TEXT,
+`addtime` DATE,
+PRIMARY KEY(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+"""
