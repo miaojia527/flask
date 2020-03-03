@@ -3,9 +3,9 @@
 
 from sqlalchemy import create_engine, Column, INT, VARCHAR, TEXT, DATETIME
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship, backref
 
-Base = declarative_base()
+from service.orm import Base
 
 class Users(Base):
 	
@@ -19,6 +19,9 @@ class Users(Base):
 	phone  		= Column("phone", VARCHAR)
 	loginTime   = Column("loginTime", DATETIME, nullable=True)
 	addtime		= Column("addtime", DATETIME)
+
+	#一对多关系
+	#entrylog = relationship("EntryLog", back_populates="users")
 
 	def __init__(self, name="", password="", email="", phone="", addtime=""):
 		super (Users, self).__init__()

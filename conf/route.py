@@ -7,7 +7,7 @@ Configuration
 from controller.Home import Home
 from controller.User import User
 from lib.interceptor import interceptor
-import flask_login, base64
+import flask_login, base64, json
 from service.module.User import User as muser
 
 __author__ = 'HaoJie Li'
@@ -30,11 +30,9 @@ class route(object):
 
 			api_key = request.args.get('apiKey')
 			uid     = request.args.get("uid")
-			print(api_key)
-			print(uid)
+
 			if api_key and uid:
 				user = muser.get(api_key, uid)
-				print(user)
 				if user:
 					return user
 
@@ -53,6 +51,13 @@ class route(object):
 				if user:
 					return user
 			return None
+		@login_manager.unauthorized_handler
+		def unauthorized():
+			# do stuff
+			ret = {}
+			ret['status'] = 0
+			ret['message']= '你还未获得授权，无法访问'
+			return json.dumps(ret)
 
 		_home = Home(args['session'])
 		_user = User(args['session'])
@@ -90,8 +95,9 @@ class route(object):
 		def voteUpd(id):
 			return _home.upgrade(id) 
 
-		@app.route("/vote/add", methods=["POST", "GET"])
+		@app.route("/vote/add", methods=["POST"])
 		@flask_login.login_required
+		@interceptor.run("vote/add")
 		def voteCreate():
 			return _home.add()
 

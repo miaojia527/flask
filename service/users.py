@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 #coding=utf-8
-from service.orm.users import Users as usr
+from service.orm.Users import Users as usr
 from sqlalchemy import func
 from lib.Safe import Safe
 from lib.service import service
-from service.orm.users import Users
+from service.orm.Users import Users
 import time
 import operator
 
@@ -26,7 +26,7 @@ class users(service):
 
 		safe = Safe()
 		passByCode = safe.encode(password)
-
+	
 		user = usr( name=name, password=passByCode, email=email, phone = phone, addtime=addtime)
 
 		session.add(user)
@@ -66,7 +66,6 @@ class users(service):
 		else:
 			if args.get("name"):
 				name = args['name']
-				print(name)
 				ret = session.query(Users).filter_by(name = name).first()
 		if ret:
 			ret = ret.to_dict()

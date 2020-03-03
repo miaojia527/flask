@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from lib.service import service
-from service.orm.entry import Entry
+from service.orm.Entry import Entry
 import sys,chardet
 import json
 from lib.func import ComplexEncoder, func
@@ -106,12 +106,12 @@ class vote(service):
 
 		return (result == 1) and "success" or "failure"
 
-	def create(self):
+	def create(self, name, pic_url, bno):
 
 		session = self.session
 		
 		addtime = time.strftime("%Y-%m-%d %H:%M:%S")
-		entry = Entry( name="徐丽梅", pic_url="http://toupiao.baiclouds.com/Content/upload/2019/8/16/c9756c31d5ff416ca6a31666a3edf18f.jpg", bno="579", addtime=addtime)
+		entry = Entry( name=name, pic_url=pic_url, bno=bno, addtime=addtime)
 		session.add(entry)
 		session.commit()
 		

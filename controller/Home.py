@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from lib.control import control
-from flask import render_template, flash, request, abort
+from flask import render_template, flash, request, abort, g
 from service.wtf import ContactForm
 from service.vote import vote
 from service.entryLog import entryLog
-from service.orm.entry import Entry
+from service.orm.Entry import Entry
 import asyncio
-import flask_login 
+import flask_login, json
 from lib.func import func
 
 class Home(control):
@@ -16,6 +16,7 @@ class Home(control):
 	def __init__(self, session):
 		super(Home, self).__init__()
 		self.vote = vote(session)
+		self.entryLog = entryLog(session) 
 
 	def index(self):
 
@@ -39,12 +40,46 @@ class Home(control):
 	def upgrade(self, id):
 
 		id = func.str2int(id)
+
+		#获取当前用户uid
+		uid = flask_login.current_user.user["id"]
 		
-		return self.vote.update(id)
+		log = self.entryLog.getByUid(id, uid)
+
+		if log is None:
+			#添加投票记录
+			self.entryLog.create(id, uid)
+			result = self.vote.update(id)
+			ret = {
+				"status": 1
+			}
+			if result == "success":
+				ret['message'] = "感谢你，你的投票已成功"
+			else:
+				ret['message'] = "你的投票失败"
+		else:
+			ret = {
+				"status" : 0,
+				"message": "您已参与投票"
+			}
+		
+		return json.dumps(ret)
 
 	def add(self):
 
-		return self.vote.create()
+		name 	= g.post["name"]
+		pic_url = g.post["pic_url"]
+		bno 	= g.post["bno"]
+
+		result =  self.vote.create(name, pic_url, bno)
+		ret = {
+			"status": 1
+		}
+		if result == "success":
+			ret['message'] = "添加参选人成功"
+		else:
+			ret['message'] = "添加参选人失败"
+		return json.dumps(ret)
 
 	def delet(self):
 

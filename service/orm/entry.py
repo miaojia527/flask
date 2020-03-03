@@ -3,11 +3,11 @@
 
 from sqlalchemy import create_engine, Column, INT, VARCHAR, TEXT, DATETIME
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship, backref
+from service.orm.EntryLog import EntryLog
+from service.orm import Base
 
 # 创建基类，返回一个定制的metaclass类
-Base = declarative_base()
-
 class Entry(Base):
 	#表名
 	__tablename__ = 'entry'
@@ -21,6 +21,8 @@ class Entry(Base):
 	endtime = Column("endtime", DATETIME)
 	lasttime= Column("lasttime", DATETIME)
 	addtime = Column("addtime", DATETIME)
+	#一对一关系	
+	entrylog = relationship("EntryLog", uselist=False, backref="entry")
 
 	def __init__(self, name, pic_url, bno, addtime, score = 0):
 

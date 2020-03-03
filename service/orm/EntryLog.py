@@ -3,10 +3,10 @@
 
 from sqlalchemy import create_engine, Column, INT, VARCHAR, TEXT, DATETIME, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 
 # 创建基类，返回一个定制的metaclass类
-Base = declarative_base()
+from service.orm import Base
 
 class EntryLog(Base):
 	#表名
@@ -14,8 +14,10 @@ class EntryLog(Base):
 
 	id 	 	= Column("id", INT, primary_key=True)
 	entryId = Column("entryId", INT, ForeignKey("entry.id"))
-	uid 	= Column("uid", INT, ForeignKey("users.id"))
+	uid 	= Column("uid", INT)
 	addtime = Column("addtime", DATETIME)
+	
+	#entry = relationship("Entry", back_populates="entrylog")
 
 	def __init__(self, entryId, uid, addtime):
 		self.entryId = entryId

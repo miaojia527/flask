@@ -6,7 +6,7 @@ import sys,chardet
 import json
 from lib.func import ComplexEncoder, func
 import time
-from sqlalchemy import func
+from sqlalchemy import func, text
 
 class entryLog(service):
     """docstring for entryLog"""
@@ -23,13 +23,25 @@ class entryLog(service):
         
         return result.to_dict()
     
+    def getByUid(self, entryId, uid):
+
+        session = self.session
+        entry = session.query(EntryLog).filter(text("entryId=:entryId and uid=:uid")).params(entryId=entryId, uid=uid)\
+                .first()
+        return entry
+    
     def create(self, entryId, uid):
         
         session = self.session
-        
-        addtime = time.strftime("%Y-%m-%d %H:%M:%S")
-        entry = EntryLog( entryId=entryId, uid=uid, addtime=addtime)
-        session.add(entry)
-        session.commit()
-        result = 1
+        try:
+            addtime = time.strftime("%Y-%m-%d %H:%M:%S")
+            entry = EntryLog( entryId=entryId, uid=uid, addtime=addtime)
+            session.add(entry)
+            session.commit()
+            result = 1
+        except Exception as e:
+            print(e)
+            result = 0
+            session.rollback()
+
         return (result == 1) and 'success' or "failure"

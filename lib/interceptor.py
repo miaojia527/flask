@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 #coding=utf-8
 
-from validator import Required, Not, Truthy, Length, Range, Equals, In, validate, InstanceOf, Pattern, LessThan, GreaterThan
+from validator import Required, Not, Truthy, Length, Range, Equals, In, validate, InstanceOf, Pattern, \
+LessThan, GreaterThan, Url
 from functools import wraps
 from flask import g, request, redirect, url_for
 from lib.func import func as fc
 import json
 
 '''
-Equals, Truthy,  [Required, Range(1, 11)], [Required, Pattern("\d\d\%")], In(["spam", "eggs", "bacon"]), Not(In(["spam", "eggs", "bacon"])
-InstanceOf, SubclassOf,  [Length(0, maximum=5)], url, GreaterThan, LessThan, Contains
+Equals, Truthy,  Range(1, 11),Pattern("\d\d\%"), In([]), Not(In([])
+InstanceOf, SubclassOf,  [Length(0, maximum=5)], url, GreaterThan, LessThan
+https://validatorpy.readthedocs.io/en/latest/index.html
 '''
 rules = {
 	"test": {
@@ -28,6 +30,13 @@ rules = {
 		"GET": {
 			"name": [Required, Pattern(r"\w+")],
 			"password": [Required, InstanceOf(str), Length(6, maximum=30)],
+		}
+	},
+	"vote/add": {
+		"POST": {
+			"name": [Required, Pattern(r"\w+")],
+			"pic_url": [Required, Url()],
+			"bno": [Required, InstanceOf(int)]
 		}
 	}
 }
@@ -49,6 +58,13 @@ errors = {
 		"GET": {
 			"name": "用户名输入不正确",
 			"password": "密码输入不正确"
+		}
+	},
+	"vote/add":{
+		"POST": {
+			"name": "参选人员输入不正确",
+			"pic_url": "图片链接不正确",
+			"bno": "参选编号输入不正确"
 		}
 	}
 }
@@ -103,8 +119,8 @@ class interceptor(object):
 								if "GET" in errors[name] and  k in errors[name]["GET"]:
 									return fc.output("参数:" + format(k) + " 错误：" + errors[name]["GET"][k])
 								return fc.output("参数:" + format(k) + "输入有误")
-
-				g.post = post_args
+				print(post_args)
+				g.post = dict(post_args)
 				g.get  = get_args
 
 				print("interceptor before done !!!!")
