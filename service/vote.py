@@ -83,6 +83,7 @@ class vote(service):
 			result = session.query(Entry).filter(Entry.score >= qrsub.c.max_score).all()
 		except Exception as e:
 			session.rollback()
+			print(e)
 		
 		list = []
 		for i in result:
@@ -94,14 +95,13 @@ class vote(service):
 
 		return "NoData"
 
-	def update(self):
+	def update(self, id):
 		
 		session = self.session
 
-		id = 3
 		lasttime = time.strftime("%Y-%m-%d %H:%M:%S")
 		result = session.query(Entry).filter(Entry.id==id) \
-			.update({"score": 4}, synchronize_session="evaluate")
+			.update({"score": Entry.score +1, "lasttime": lasttime}, synchronize_session="evaluate")
 		session.commit()
 
 		return (result == 1) and "success" or "failure"

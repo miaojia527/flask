@@ -27,6 +27,7 @@ configs = {
         'host': "127.0.0.1",
         'port': "6379",
         'db'  : "flask",
-        'pass': "123456"
+        'pass': "123456",
+        "expireTime": 3600,
     }
 }

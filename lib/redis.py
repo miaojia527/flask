@@ -2,7 +2,7 @@
 #coding=utf-8
 from redis import StrictRedis, ConnectionPool
 import conf.config
-import json
+import json, pickle
 
 #redlock
 class redis(object):
@@ -14,6 +14,7 @@ class redis(object):
         url  = "redis://:"+ configs['pass'] +"@"+ configs['host'] +":"+ configs['port'] +"/1"
         pool = ConnectionPool.from_url(url)
         self.redis = StrictRedis(connection_pool=pool)
+        self.expireTime = configs['expireTime']
 
     def getRedit(self):
 
@@ -22,12 +23,32 @@ class redis(object):
     def rget(self, key):
         
         vl = self.redis.get(key)
-        return json.loads(vl)
+        return pickle.loads(vl)
     
     def rset(self, key, value):
 
-        value = json.dumps(value)
+        value = pickle.dumps(value)
         return self.redis.set(key, value)
+
+    def hget(self, apikey, key):
+
+        vl = self.redis.hget(apikey, key)
+        return pickle.loads(vl)
+
+    def hset(self, apikey, key, value):
+
+        value = pickle.dumps(value)
+        array  = self.redis.hset(apikey, key, value)
+        self.redis.expire(apikey, self.expireTime)
+        return array
+    
+    def hexist(self, apikey, key):
+
+        return self.redis.hexists(apikey, key)
+
+    def hdel(self, apikey, key):
+
+        return self.redis.hdel(apikey, key)
 
     #分布式锁  当key存在时，返回False，否则设置成功，返回True
     def rsetnx(self, key, value):

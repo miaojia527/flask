@@ -5,8 +5,11 @@ from lib.control import control
 from flask import render_template, flash, request, abort
 from service.wtf import ContactForm
 from service.vote import vote
+from service.entryLog import entryLog
 from service.orm.entry import Entry
 import asyncio
+import flask_login 
+from lib.func import func
 
 class Home(control):
 
@@ -29,13 +32,15 @@ class Home(control):
 		return render_template("form.html", form = form)
 
 	def homes(self):
-		
+	
 		lists = self.vote.getAll()
 		return lists
 
-	def upgrade(self):
+	def upgrade(self, id):
+
+		id = func.str2int(id)
 		
-		return self.vote.update()
+		return self.vote.update(id)
 
 	def add(self):
 

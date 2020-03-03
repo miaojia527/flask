@@ -7,7 +7,7 @@ Configuration
 from controller.Home import Home
 from controller.User import User
 from lib.interceptor import interceptor
-import flask_login 
+import flask_login, base64
 from service.module.User import User as muser
 
 __author__ = 'HaoJie Li'
@@ -19,15 +19,40 @@ class route(object):
 
 	def path(app, **args):
 
+		##页面登录插件
 		login_manager = flask_login.LoginManager()
 		login_manager.session_protection = 'strong'
-		login_manager.login_view = 'login'
 		login_manager.login_message = u"用户未登录，请先登录。"
 		login_manager.init_app(app)
 
-		@login_manager.user_loader
-		def load_user(uid):
-			return muser.get(uid)
+		@login_manager.request_loader
+		def load_user_from_request(request):
+
+			api_key = request.args.get('apiKey')
+			uid     = request.args.get("uid")
+			print(api_key)
+			print(uid)
+			if api_key and uid:
+				user = muser.get(api_key, uid)
+				print(user)
+				if user:
+					return user
+
+			api_key = request.headers.get('auth')
+			uid 	= request.headers.get('uid')
+			if api_key:
+				try:
+					api_key = base64.b64decode(api_key)
+				except TypeError:
+					pass
+				try:
+					uid = base64.b64decode(uid)
+				except TypeError:
+					pass
+				user = muser.get(api_key, uid)
+				if user:
+					return user
+			return None
 
 		_home = Home(args['session'])
 		_user = User(args['session'])
@@ -60,21 +85,29 @@ class route(object):
 		def vote():
 			return _home.homes()
 
-		@app.route("/vote/upgrade", methods=["POST", "GET"])
-		def voteUpgrade():
-			return _home.upgrade() 
+		@app.route("/vote/upgrade/<id>", methods=["POST", "GET"])
+		@flask_login.login_required
+		def voteUpd(id):
+			return _home.upgrade(id) 
 
 		@app.route("/vote/add", methods=["POST", "GET"])
+		@flask_login.login_required
 		def voteCreate():
 			return _home.add()
 
 		@app.route("/vote/delete")
+		@flask_login.login_required
 		def voteDel():
 			return _home.delet()
 
 		@app.route("/test", methods=["POST", "GET"])
+		@flask_login.login_required
 		@interceptor.run("test")
 		def test():
 			return _home.test()
+
+		@app.errorhandler(404)
+		def no_found_page(self):
+			return '404', 404
 
 		return True

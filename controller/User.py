@@ -10,6 +10,7 @@ from lib.func import func
 from flask_login import login_user, logout_user
 from service.module.User import User as muser
 from lib.redis import redis
+import uuid
 
 class User(control):
 
@@ -41,17 +42,15 @@ class User(control):
 			ret['message'] = "该密码不存在"
 			return func.js(ret)
 
-		for k,v in cur_user.items():
-			if(isinstance(v, datetime.datetime)):
-				cur_user[k] = str(v)
-
+		apiKey = str(uuid.uuid4())
 		_redis = redis() 
-		_redis.rset(cur_user['id'], cur_user)
+		_redis.hset(apiKey, cur_user['id'], cur_user)
 
-		user = muser(cur_user['id'])
+		user = muser(apiKey, cur_user['id'])
 		login_user(user)
 
 		ret['status']  = 1
+		ret['apiKey']  = apiKey
 		ret['message'] = cur_user
 
 		return func.js(ret)
