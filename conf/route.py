@@ -9,6 +9,9 @@ from controller.User import User
 from lib.interceptor import interceptor
 import flask_login, base64, json
 from service.module.User import User as muser
+from lib.Captcha import Captcha
+from flask import Response,session
+from io import BytesIO
 
 __author__ = 'HaoJie Li'
 
@@ -61,7 +64,8 @@ class route(object):
 
 		_home = Home(args['session'])
 		_user = User(args['session'])
-		
+		_captcha = Captcha()
+
 		@app.route("/")
 		def index():
 			return _home.index()
@@ -111,6 +115,22 @@ class route(object):
 		@interceptor.run("test")
 		def test():
 			return _home.test()
+		
+		@app.route("/captcha", methods=["GET"])
+		def captcha():
+			text, image = Captcha.gene_graph_captcha()
+			# 将验证码字符串储存在session中
+			out = BytesIO()
+			image.save(out, 'png')
+			out.seek(0)
+			resp = Response(out.read(), mimetype="image/png")
+			session['valicode'] = text
+			return resp
+			
+		@app.route("/vali", methods=["GET"])
+		def vali():
+
+			return session['valicode']
 
 		@app.errorhandler(404)
 		def no_found_page(self):

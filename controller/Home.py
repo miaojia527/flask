@@ -90,6 +90,10 @@ class Home(control):
 		result = self.vote.test()
 		return result
 
+	def captcha(self):
+
+		return "1"
+
 	def mail(self):
 		
 		result = "success"

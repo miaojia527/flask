@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import numpy as np
 class ts(object):
 	"""docstring for ts"""
 	def __init__(self, arg):
@@ -14,7 +14,7 @@ class ts(object):
 	def __del__(self):
 		print("unload class ts")
 
-ts = ts('sb')
-ts.ab
 
-print(ts.ks)
+q = float('-inf')
+
+print(q)

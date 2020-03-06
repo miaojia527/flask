@@ -2,7 +2,7 @@
 #coding=utf-8
 from flask_login import UserMixin
 from html.parser import HTMLParser
-import os, time
+import os, time, sys
 import redis
 import collections
 import uuid
@@ -36,5 +36,5 @@ def f(x):
     return x*x
 print(list(map(f, [1, 2, 3, 4, 5, 6, 7, 8, 9])))
 
-print(uuid.uuid1())
-print(uuid.uuid4())
+root_path = os.path.abspath("/")
+print(root_path)

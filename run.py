@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from conf.route import route
 
-root_path 		= os.path.abspath("/")
+root_path 		= os.path.abspath("/flask")
 template_path 	= sys.path[0] + "\\templates"
 
 if root_path not in sys.path:
