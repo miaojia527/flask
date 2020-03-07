@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>表单提交</title>
+</head>
+<body>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    var socket = io.connect('http://localhost:5000/chat');
+    socket.on('connect', function() {
+        socket.emit('json', {data: 'I\'m connected!'});
+        socket.on('server_response', function (data) {
+            console.log(data);
+        });
+        socket.on('message', function (data) {
+            console.log("message:" + data);
+        });
+        socket.on('json', function (data) {
+            console.log("json:" + data);
+        });
+    });
+</script>
+</body>
+</html>

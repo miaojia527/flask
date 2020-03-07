@@ -10,6 +10,7 @@ from service.orm.Entry import Entry
 import asyncio
 import flask_login, json
 from lib.func import func
+from lib.logger import Logger
 
 class Home(control):
 

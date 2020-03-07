@@ -9,6 +9,7 @@ __author__ = 'HaoJie Li'
 
 configs = {
     'debug': True,
+    'port' : 5000,
     'db': {
         'host': '127.0.0.1',
         'port': 3306,

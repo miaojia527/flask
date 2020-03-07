@@ -7,8 +7,10 @@ import conf.config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from conf.route import route
+from flask_socketio import SocketIO
+from conf.socket import socket
 
-root_path 		= os.path.abspath("/flask")
+root_path 		= os.path.abspath('.')
 template_path 	= sys.path[0] + "\\templates"
 
 if root_path not in sys.path:
@@ -21,7 +23,10 @@ configs = conf.config.configs
 app.config['SECRET_KEY'] 	= configs['session']['secret']
 app.config['UPLOAD_FOLDER'] = configs['file']['upload_folder']
 
-## 数据链接
+async_mode = None
+socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*") #解决跨域问题
+
+## 数据库链接
 dblink = "mysql+mysqldb://" + str(configs['db']['user']) + ":" + str(configs['db']['password']) + "@" \
 		 + str(configs['db']['host']) + ":" + str(configs['db']['port']) + "/" + str(configs['db']['db']) \
 		 + "?charset=utf8"
@@ -32,7 +37,9 @@ Session = sessionmaker(bind = engine)
 session = Session()
 
 route.path(app, template=template_path, session=session)
+socket.path(app, socketio, session=session)
 
 if __name__ == '__main__':
-	app.run(debug = configs['debug'])
+	#tcp端口默认5000端口
+	socketio.run(app, debug = configs['debug'], port=configs['port'])
 

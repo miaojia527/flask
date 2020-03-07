@@ -15,6 +15,12 @@ class ts(object):
 		print("unload class ts")
 
 
-q = float('-inf')
-
-print(q)
+class People(object):
+    country = 'china'
+    #类⽅法，⽤classmethod来进⾏修饰
+    @classmethod
+    def getCountry(cls):
+        return cls.country
+p = People()
+print(p.getCountry()) #可以⽤过实例对象引⽤
+print(People.getCountry()) #可以通过类对象引⽤
