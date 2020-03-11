@@ -29,7 +29,7 @@ class vote(service):
 		session = self.session
 
 		#清除默认缓存
-		session.commit()
+		#session.commit()
 		result = session.query(Entry).filter_by(id = 1).first()
 
 		return result.to_dict()
@@ -43,7 +43,7 @@ class vote(service):
 		where = None
 
 		#清除默认缓存
-		session.commit()
+		#session.commit()
 		if where:
 			result = (session.query(Entry)
 						.order_by(Entry.id.asc())
@@ -101,7 +101,7 @@ class vote(service):
 
 		lasttime = time.strftime("%Y-%m-%d %H:%M:%S")
 		result = session.query(Entry).filter(Entry.id==id) \
-			.update({"score": Entry.score +1, "lasttime": lasttime}, synchronize_session="evaluate")
+			.update({"score": Entry.score +1, "lasttime": lasttime}, synchronize_session="fetch")
 		session.commit()
 
 		return (result == 1) and "success" or "failure"
@@ -123,7 +123,7 @@ class vote(service):
 		session = self.session
 
 		id = 7
-		result= session.query(Entry).filter(Entry.id == id).delete(synchronize_session="evaluate")
+		result= session.query(Entry).filter(Entry.id == id).delete(synchronize_session="fetch")  #更新session缓存
 		session.commit()
 
 		return (result == 1) and 'success' or "failure"

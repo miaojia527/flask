@@ -9,7 +9,8 @@ class Singleton:
  
     def __init__(self, cls):
         self.__key = cls
- 
+    
+    #将类变成一个函数
     def __call__(self, *args, **kwargs):
         if self.__key not in self.cls:
             self[self.__key] = self.__key(*args, **kwargs)

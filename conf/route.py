@@ -7,10 +7,10 @@ Configuration
 from controller.Home import Home
 from controller.User import User
 from lib.interceptor import interceptor
-import flask_login, base64, json
+import flask_login, base64, json, os
 from service.module.User import User as muser
 from lib.Captcha import Captcha
-from flask import Response,session
+from flask import Response, session, send_from_directory
 from io import BytesIO
 from conf.middleware import middleware
 
@@ -25,13 +25,19 @@ class route(object):
 
 		middleware(app)
 
-		_home = Home(args['session'])
+		_home = Home(args['session']) 
 		_user = User(args['session'])
 		_captcha = Captcha()
 
 		@app.route("/")
 		def index():
 			return _home.index()
+		
+		@app.route('/favicon.ico')
+		def favicon():
+			
+			return send_from_directory(os.path.join(app.root_path, 'static'),
+									'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 		@app.route("/reg", methods=["POST"])
 		@interceptor.run("reg")
@@ -94,6 +100,11 @@ class route(object):
 		def vali():
 
 			return session['valicode']
+		
+		@app.route("/avator", methods=["GET"])
+		def avator():
+
+			return _home.avator(app)
 
 		@app.errorhandler(404)
 		def no_found_page(self):

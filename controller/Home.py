@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from lib.control import control
-from flask import render_template, flash, request, abort, g
+from flask import render_template, flash, request, abort, g, request
 from service.wtf import ContactForm
 from service.vote import vote
 from service.entryLog import entryLog
@@ -11,6 +11,7 @@ import asyncio
 import flask_login, json
 from lib.func import func
 from lib.logger import Logger
+from flask_gravatar import Gravatar
 
 class Home(control):
 
@@ -21,7 +22,8 @@ class Home(control):
 
 	def index(self):
 
-		return "flask api"
+		ip = request.remote_addr
+		return "Flask Api v1.0 || Request ip: "+ ip
 
 	def wtf(self):
 		
@@ -99,3 +101,14 @@ class Home(control):
 		
 		result = "success"
 		return result
+	
+	def avator(self, app):
+
+		gravatar = Gravatar(app,
+					size=100,
+					rating='x',
+					default='retro',
+					force_default=False,
+					use_ssl=False,
+					base_url=None)
+		return	render_template("avator.html", gravatar = gravatar)

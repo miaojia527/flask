@@ -18,11 +18,8 @@ class func(object):
 		
 		l = [None, False,0, 0.0, '', [], {}, (), "''"," "]
 		for str in l:
-			if one:
-				return true
-			else:
-				return false
-		return false
+			return True
+		return False
 
 	def output(message):
 		
@@ -36,9 +33,9 @@ class func(object):
 
 		return json.dumps(ret, cls=ComplexEncoder)
 
-	def dejs(json):
+	def dejs(jsonData):
 
-		return json.loads(json)
+		return json.loads(jsonData)
 
 	#xss注入
 	def xss(data):

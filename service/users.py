@@ -59,7 +59,7 @@ class users(service):
 		uid = None
 		if args.get("uid"):
 			uid = args["uid"]
-		session.commit()
+
 		ret = {}
 		if uid:
 			ret = session.query(Users).filter_by(id = uid).first()

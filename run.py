@@ -27,9 +27,11 @@ async_mode = None
 socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*") #解决跨域问题
 
 ## 数据库链接
-dblink = "mysql+mysqldb://" + str(configs['db']['user']) + ":" + str(configs['db']['password']) + "@" \
-		 + str(configs['db']['host']) + ":" + str(configs['db']['port']) + "/" + str(configs['db']['db']) \
-		 + "?charset=utf8"
+## dialect+driver://username:password@host:port/database
+## postgresql+pg8000: || mysql+mysqldb: || mysql+pymysql: || mssql+pyodbc: || mssql+pymssql: || sqlite:////absolute/path/to/foo.db || oracle:
+
+dblink = "mysql+mysqldb://{}:{}@{}:{}/{}?charset=utf8".format(configs['db']['user'],configs['db']['password'],\
+		configs['db']['host'],configs['db']['port'],configs['db']['db'])
 
 engine 	= create_engine(dblink, pool_size=10, max_overflow=5, pool_timeout=30, echo=True)
 

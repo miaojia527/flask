@@ -21,6 +21,3 @@ class People(object):
     @classmethod
     def getCountry(cls):
         return cls.country
-p = People()
-print(p.getCountry()) #可以⽤过实例对象引⽤
-print(People.getCountry()) #可以通过类对象引⽤
